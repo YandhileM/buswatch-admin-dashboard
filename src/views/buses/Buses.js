@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import {
   CAlert,
+  CCard,
+  CCardBody,
   CCol,
+  CFormLabel,
   CFormSelect,
   CPagination,
   CPaginationItem,
@@ -15,12 +18,15 @@ import {
   CTableRow,
 } from '@coreui/react'
 import useBuses from '../../hooks/useBuses'
+import { useAllRoutes } from '../../hooks/useAnalytics'
 
 const Buses = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
+  const [routeId, setRouteId] = useState('')
 
-  const { data, loading, error } = useBuses(page, pageSize)
+  const { data, loading, error } = useBuses(page, pageSize, routeId)
+  const { routes } = useAllRoutes()
 
   const items = data?.items ?? []
   const totalCount = data?.totalCount ?? 0
@@ -36,6 +42,26 @@ const Buses = () => {
 
   return (
     <>
+      {/* Route filter */}
+      <CCard className="mb-4">
+        <CCardBody>
+          <CRow className="g-3 align-items-end">
+            <CCol xs={12} sm={6} md={4} lg={3}>
+              <CFormLabel>Route</CFormLabel>
+              <CFormSelect
+                value={routeId}
+                onChange={e => { setRouteId(e.target.value); setPage(1) }}
+              >
+                <option value="">All Routes</option>
+                {routes.map(r => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </CFormSelect>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
+
       <CRow className="mb-3 align-items-center">
         <CCol>
           <span className="text-medium-emphasis">
