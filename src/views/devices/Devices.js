@@ -64,7 +64,6 @@ const Devices = () => {
           <CTable striped hover responsive>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>ID</CTableHeaderCell>
                 <CTableHeaderCell>Hardware ID</CTableHeaderCell>
                 <CTableHeaderCell>Platform</CTableHeaderCell>
                 <CTableHeaderCell>Notifications</CTableHeaderCell>
@@ -77,7 +76,6 @@ const Devices = () => {
             <CTableBody>
               {items.map(d => (
                 <CTableRow key={d.id} className={d.deletedAt ? 'text-muted' : ''}>
-                  <CTableDataCell>{d.id}</CTableDataCell>
                   <CTableDataCell>{d.hardwareId}</CTableDataCell>
                   <CTableDataCell>{d.platform}</CTableDataCell>
                   <CTableDataCell>

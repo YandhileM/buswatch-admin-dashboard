@@ -145,7 +145,6 @@ const Incidents = () => {
           <CTable striped hover responsive>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>ID</CTableHeaderCell>
                 <CTableHeaderCell>Bus ID</CTableHeaderCell>
                 <CTableHeaderCell>Depart Time</CTableHeaderCell>
                 <CTableHeaderCell>Route</CTableHeaderCell>
@@ -159,7 +158,6 @@ const Incidents = () => {
             <CTableBody>
               {items.map(i => (
                 <CTableRow key={i.id}>
-                  <CTableDataCell>{i.id}</CTableDataCell>
                   <CTableDataCell>{i.busId}</CTableDataCell>
                   <CTableDataCell>{i.bus?.departTime}</CTableDataCell>
                   <CTableDataCell>{i.route?.name}</CTableDataCell>

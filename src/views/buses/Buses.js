@@ -63,7 +63,6 @@ const Buses = () => {
           <CTable striped hover responsive>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>ID</CTableHeaderCell>
                 <CTableHeaderCell>Depart Time</CTableHeaderCell>
                 <CTableHeaderCell>Direction</CTableHeaderCell>
                 <CTableHeaderCell>Route</CTableHeaderCell>
@@ -75,7 +74,6 @@ const Buses = () => {
             <CTableBody>
               {items.map(b => (
                 <CTableRow key={b.id}>
-                  <CTableDataCell>{b.id}</CTableDataCell>
                   <CTableDataCell>{b.departTime}</CTableDataCell>
                   <CTableDataCell>{b.direction}</CTableDataCell>
                   <CTableDataCell>{b.route?.name}</CTableDataCell>

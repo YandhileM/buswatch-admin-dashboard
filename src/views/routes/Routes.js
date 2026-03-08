@@ -63,7 +63,6 @@ const Routes = () => {
           <CTable striped hover responsive>
             <CTableHead>
               <CTableRow>
-                <CTableHeaderCell>ID</CTableHeaderCell>
                 <CTableHeaderCell>Name</CTableHeaderCell>
                 <CTableHeaderCell>Origin</CTableHeaderCell>
                 <CTableHeaderCell>Destination</CTableHeaderCell>
@@ -76,7 +75,6 @@ const Routes = () => {
             <CTableBody>
               {items.map(r => (
                 <CTableRow key={r.id}>
-                  <CTableDataCell>{r.id}</CTableDataCell>
                   <CTableDataCell>{r.name}</CTableDataCell>
                   <CTableDataCell>{r.originStop?.name}</CTableDataCell>
                   <CTableDataCell>{r.destinationStop?.name}</CTableDataCell>
