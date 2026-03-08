@@ -1,13 +1,13 @@
 import React from 'react'
 import { CCard, CCardBody, CCardHeader } from '@coreui/react'
 
-const Dashboard = () => {
+const Buses = () => {
   return (
     <CCard>
-      <CCardHeader>Dashboard</CCardHeader>
+      <CCardHeader>Buses</CCardHeader>
       <CCardBody>Coming soon</CCardBody>
     </CCard>
   )
 }
 
-export default Dashboard
+export default Buses
