@@ -53,7 +53,7 @@ const Dashboard = () => {
               <CFormInput
                 type="date"
                 value={startDate.toISOString().split('T')[0]}
-                onChange={e => setStartDate(new Date(e.target.value))}
+                onChange={(e) => setStartDate(new Date(e.target.value))}
               />
             </CCol>
             <CCol xs={12} sm={6} md={4} lg={3}>
@@ -61,7 +61,7 @@ const Dashboard = () => {
               <CFormInput
                 type="date"
                 value={endDate.toISOString().split('T')[0]}
-                onChange={e => setEndDate(new Date(e.target.value))}
+                onChange={(e) => setEndDate(new Date(e.target.value))}
               />
             </CCol>
           </CRow>
@@ -74,44 +74,49 @@ const Dashboard = () => {
         <div className="text-center my-4">
           <CSpinner />
         </div>
-      ) : stats && (
-        <>
-          <CRow>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Total Buses" value={stats.totalBuses} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Total Routes" value={stats.totalRoutes} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Total Devices" value={stats.totalDevices} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Total Subscriptions" value={stats.totalSubscriptions} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Incidents Today" value={stats.incidentsToday} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Incidents This Week" value={stats.incidentsThisWeek} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Incidents This Month" value={stats.incidentsThisMonth} />
-            </CCol>
-            <CCol xs={12} sm={6} xl={3}>
-              <StatCard title="Active Devices (Last 7 Days)" value={stats.activeDevicesLast7Days} />
-            </CCol>
-          </CRow>
+      ) : (
+        stats && (
+          <>
+            <CRow>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Total Buses" value={stats.totalBuses} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Total Routes" value={stats.totalRoutes} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Total Devices" value={stats.totalDevices} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Total Subscriptions" value={stats.totalSubscriptions} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Incidents Today" value={stats.incidentsToday} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Incidents This Week" value={stats.incidentsThisWeek} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard title="Incidents This Month" value={stats.incidentsThisMonth} />
+              </CCol>
+              <CCol xs={12} sm={6} xl={3}>
+                <StatCard
+                  title="Active Devices (Last 7 Days)"
+                  value={stats.activeDevicesLast7Days}
+                />
+              </CCol>
+            </CRow>
 
-          {stats.mostActiveRouteId && (
-            <CCard color="success" className="mb-4">
-              <CCardBody>
-                <strong>Most Active Route:</strong> {stats.mostActiveRouteName} —{' '}
-                {stats.mostActiveRouteIncidentCount} incidents
-              </CCardBody>
-            </CCard>
-          )}
-        </>
+            {stats.mostActiveRouteId && (
+              <CCard color="danger" textColor="white" className="mb-4">
+                <CCardBody>
+                  <strong>Most Active Route:</strong> {stats.mostActiveRouteName} —{' '}
+                  {stats.mostActiveRouteIncidentCount} incidents
+                </CCardBody>
+              </CCard>
+            )}
+          </>
+        )
       )}
 
       {/* Section C — Charts */}
@@ -121,18 +126,22 @@ const Dashboard = () => {
             <CCardHeader>Incidents by Day</CCardHeader>
             <CCardBody>
               {byDayLoading ? (
-                <div className="text-center my-4"><CSpinner /></div>
+                <div className="text-center my-4">
+                  <CSpinner />
+                </div>
               ) : (
                 <CChart
                   type="line"
                   data={{
-                    labels: byDay.map(d => d.date),
-                    datasets: [{
-                      label: 'Incidents',
-                      data: byDay.map(d => d.count),
-                      borderColor: '#2eb85c',
-                      fill: false,
-                    }],
+                    labels: byDay.map((d) => d.date),
+                    datasets: [
+                      {
+                        label: 'Incidents',
+                        data: byDay.map((d) => d.count),
+                        borderColor: '#2eb85c',
+                        fill: false,
+                      },
+                    ],
                   }}
                 />
               )}
@@ -144,17 +153,21 @@ const Dashboard = () => {
             <CCardHeader>Incidents by Hour</CCardHeader>
             <CCardBody>
               {byHourLoading ? (
-                <div className="text-center my-4"><CSpinner /></div>
+                <div className="text-center my-4">
+                  <CSpinner />
+                </div>
               ) : (
                 <CChart
                   type="bar"
                   data={{
-                    labels: byHour.map(d => `${d.hour}:00`),
-                    datasets: [{
-                      label: 'Incidents',
-                      data: byHour.map(d => d.count),
-                      backgroundColor: '#2eb85c',
-                    }],
+                    labels: byHour.map((d) => `${d.hour}:00`),
+                    datasets: [
+                      {
+                        label: 'Incidents',
+                        data: byHour.map((d) => d.count),
+                        backgroundColor: '#2eb85c',
+                      },
+                    ],
                   }}
                 />
               )}
@@ -168,7 +181,9 @@ const Dashboard = () => {
         <CCardHeader>Top 10 Routes by Incidents</CCardHeader>
         <CCardBody>
           {topRoutesLoading ? (
-            <div className="text-center my-4"><CSpinner /></div>
+            <div className="text-center my-4">
+              <CSpinner />
+            </div>
           ) : (
             <CTable striped hover responsive>
               <CTableHead>
