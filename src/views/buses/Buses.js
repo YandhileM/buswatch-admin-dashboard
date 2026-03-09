@@ -32,8 +32,14 @@ const Buses = () => {
   const totalCount = data?.totalCount ?? 0
   const totalPages = data?.totalPages ?? 1
 
-  const pageNumbers = []
-  for (let i = 1; i <= totalPages; i++) pageNumbers.push(i)
+  const getPaginationItems = (currentPage, total) => {
+    const delta = 2
+    const range = []
+    for (let i = Math.max(1, currentPage - delta); i <= Math.min(total, currentPage + delta); i++) {
+      range.push(i)
+    }
+    return range
+  }
 
   const handlePageSizeChange = (e) => {
     setPageSize(Number(e.target.value))
@@ -115,7 +121,7 @@ const Buses = () => {
             <CPagination className="mt-3">
               <CPaginationItem disabled={page === 1} onClick={() => setPage(1)}>First</CPaginationItem>
               <CPaginationItem disabled={page === 1} onClick={() => setPage(p => p - 1)}>Prev</CPaginationItem>
-              {pageNumbers.map(n => (
+              {getPaginationItems(page, totalPages).map(n => (
                 <CPaginationItem key={n} active={n === page} onClick={() => setPage(n)}>
                   {n}
                 </CPaginationItem>
