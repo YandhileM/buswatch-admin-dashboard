@@ -1,38 +1,38 @@
 import { useState, useEffect } from 'react'
 import apiClient from '../api/apiClient'
 
-export const useIncidentsByDay = (startDate, endDate) => {
+export const useIncidentsByDay = (startDate, endDate, routeId = null) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    setLoading(true)
-    apiClient.get('/admin/analytics/incidents-by-day', {
-      params: { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
-    })
-      .then(res => setData(res.data))
-      .catch(err => setError(err.message))
+    const params = { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
+    if (routeId) params.routeId = routeId
+    apiClient
+      .get('/admin/analytics/incidents-by-day', { params })
+      .then((res) => setData(res.data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [startDate.toISOString(), endDate.toISOString()])
+  }, [startDate.toISOString(), endDate.toISOString(), routeId])
 
   return { data, loading, error }
 }
 
-export const useIncidentsByHour = (startDate, endDate) => {
+export const useIncidentsByHour = (startDate, endDate, routeId = null) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    setLoading(true)
-    apiClient.get('/admin/analytics/incidents-by-hour', {
-      params: { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
-    })
-      .then(res => setData(res.data))
-      .catch(err => setError(err.message))
+    const params = { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
+    if (routeId) params.routeId = routeId
+    apiClient
+      .get('/admin/analytics/incidents-by-hour', { params })
+      .then((res) => setData(res.data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [startDate.toISOString(), endDate.toISOString()])
+  }, [startDate.toISOString(), endDate.toISOString(), routeId])
 
   return { data, loading, error }
 }
@@ -43,11 +43,57 @@ export const useTopRoutes = (limit = 10) => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    apiClient.get('/admin/analytics/top-routes', { params: { limit } })
-      .then(res => setData(res.data))
-      .catch(err => setError(err.message))
+    apiClient
+      .get('/admin/analytics/top-routes', { params: { limit } })
+      .then((res) => setData(res.data))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [limit])
 
   return { data, loading, error }
+}
+
+export const useAllRoutes = () => {
+  const [routes, setRoutes] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    apiClient
+      .get('/admin/routes', { params: { page: 1, pageSize: 100 } })
+      .then((res) => setRoutes(res.data.items))
+      .catch(() => setRoutes([]))
+      .finally(() => setLoading(false))
+  }, [])
+
+  return { routes, loading }
+}
+
+export const useRouteDetail = (routeId) => {
+  const [route, setRoute] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (!routeId) return
+    apiClient
+      .get(`/admin/routes/${routeId}`)
+      .then((res) => setRoute(res.data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [routeId])
+
+  return { route, loading, error }
+}
+
+export const useReportTypes = () => {
+  const [reportTypes, setReportTypes] = useState([])
+
+  useEffect(() => {
+    apiClient
+      .get('/report-types')
+      .then((res) => setReportTypes(res.data))
+      .catch(() => setReportTypes([]))
+  }, [])
+
+  return { reportTypes }
 }
