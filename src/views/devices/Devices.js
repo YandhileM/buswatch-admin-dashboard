@@ -27,8 +27,14 @@ const Devices = () => {
   const totalCount = data?.totalCount ?? 0
   const totalPages = data?.totalPages ?? 1
 
-  const pageNumbers = []
-  for (let i = 1; i <= totalPages; i++) pageNumbers.push(i)
+  const getPaginationItems = (currentPage, total) => {
+    const delta = 2
+    const range = []
+    for (let i = Math.max(1, currentPage - delta); i <= Math.min(total, currentPage + delta); i++) {
+      range.push(i)
+    }
+    return range
+  }
 
   const handlePageSizeChange = (e) => {
     setPageSize(Number(e.target.value))
@@ -44,11 +50,7 @@ const Devices = () => {
           </span>
         </CCol>
         <CCol xs="auto">
-          <CFormSelect
-            value={pageSize}
-            onChange={handlePageSizeChange}
-            style={{ width: 'auto' }}
-          >
+          <CFormSelect value={pageSize} onChange={handlePageSizeChange} style={{ width: 'auto' }}>
             <option value={25}>25 per page</option>
             <option value={50}>50 per page</option>
             <option value={100}>100 per page</option>
@@ -58,7 +60,9 @@ const Devices = () => {
 
       {error && <CAlert color="danger">{error}</CAlert>}
       {loading ? (
-        <div className="text-center my-5"><CSpinner /></div>
+        <div className="text-center my-5">
+          <CSpinner />
+        </div>
       ) : (
         <>
           <CTable striped hover responsive>
@@ -74,24 +78,26 @@ const Devices = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {items.map(d => (
+              {items.map((d) => (
                 <CTableRow key={d.id} className={d.deletedAt ? 'text-muted' : ''}>
                   <CTableDataCell>{d.hardwareId}</CTableDataCell>
                   <CTableDataCell>{d.platform}</CTableDataCell>
                   <CTableDataCell>
-                    {d.notificationsEnabled
-                      ? <CBadge color="success">On</CBadge>
-                      : <CBadge color="secondary">Off</CBadge>
-                    }
+                    {d.notificationsEnabled ? (
+                      <CBadge color="success">On</CBadge>
+                    ) : (
+                      <CBadge color="secondary">Off</CBadge>
+                    )}
                   </CTableDataCell>
                   <CTableDataCell>{d.subscriptionCount}</CTableDataCell>
                   <CTableDataCell>{d.incidentCount}</CTableDataCell>
                   <CTableDataCell>{new Date(d.createdAt).toLocaleDateString()}</CTableDataCell>
                   <CTableDataCell>
-                    {d.deletedAt
-                      ? <CBadge color="danger">Deleted</CBadge>
-                      : <CBadge color="success">Active</CBadge>
-                    }
+                    {d.deletedAt ? (
+                      <CBadge color="danger">Deleted</CBadge>
+                    ) : (
+                      <CBadge color="success">Active</CBadge>
+                    )}
                   </CTableDataCell>
                 </CTableRow>
               ))}
@@ -100,15 +106,23 @@ const Devices = () => {
 
           {totalPages > 1 && (
             <CPagination className="mt-3">
-              <CPaginationItem disabled={page === 1} onClick={() => setPage(1)}>First</CPaginationItem>
-              <CPaginationItem disabled={page === 1} onClick={() => setPage(p => p - 1)}>Prev</CPaginationItem>
-              {pageNumbers.map(n => (
+              <CPaginationItem disabled={page === 1} onClick={() => setPage(1)}>
+                First
+              </CPaginationItem>
+              <CPaginationItem disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+                Prev
+              </CPaginationItem>
+              {getPaginationItems(page, totalPages).map((n) => (
                 <CPaginationItem key={n} active={n === page} onClick={() => setPage(n)}>
                   {n}
                 </CPaginationItem>
               ))}
-              <CPaginationItem disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>Next</CPaginationItem>
-              <CPaginationItem disabled={page === totalPages} onClick={() => setPage(totalPages)}>Last</CPaginationItem>
+              <CPaginationItem disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
+                Next
+              </CPaginationItem>
+              <CPaginationItem disabled={page === totalPages} onClick={() => setPage(totalPages)}>
+                Last
+              </CPaginationItem>
             </CPagination>
           )}
         </>
