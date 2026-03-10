@@ -18,7 +18,7 @@ import {
 } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 import useStats from '../../hooks/useStats'
-import { useIncidentsByDay, useIncidentsByHour, useTopRoutes } from '../../hooks/useAnalytics'
+import { useIncidentsByDay, useIncidentsByHour, useTopRoutes, useSubscriptionGrowth } from '../../hooks/useAnalytics'
 
 const defaultEnd = new Date()
 const defaultStart = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -40,6 +40,7 @@ const Dashboard = () => {
   const { data: byDay, loading: byDayLoading } = useIncidentsByDay(startDate, endDate)
   const { data: byHour, loading: byHourLoading } = useIncidentsByHour(startDate, endDate)
   const { data: topRoutes, loading: topRoutesLoading } = useTopRoutes(10)
+  const { data: growthData, loading: growthLoading } = useSubscriptionGrowth()
 
   return (
     <>
@@ -166,6 +167,39 @@ const Dashboard = () => {
                         label: 'Incidents',
                         data: byHour.map((d) => d.count),
                         backgroundColor: '#2eb85c',
+                      },
+                    ],
+                  }}
+                />
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/* Section C2 — Subscription Growth */}
+      <CRow className="mb-4">
+        <CCol md={12}>
+          <CCard>
+            <CCardHeader>Subscription Growth</CCardHeader>
+            <CCardBody>
+              {growthLoading ? (
+                <div className="text-center my-4">
+                  <CSpinner />
+                </div>
+              ) : (
+                <CChart
+                  type="line"
+                  style={{ height: '200px' }}
+                  data={{
+                    labels: growthData.map((d) => d.date),
+                    datasets: [
+                      {
+                        label: 'Subscriptions',
+                        data: growthData.map((d) => d.cumulativeCount),
+                        borderColor: '#2eb85c',
+                        fill: true,
+                        backgroundColor: 'rgba(46, 184, 92, 0.1)',
                       },
                     ],
                   }}
