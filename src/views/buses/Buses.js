@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   CAlert,
   CCard,
@@ -21,6 +22,7 @@ import useBuses from '../../hooks/useBuses'
 import { useAllRoutes } from '../../hooks/useAnalytics'
 
 const Buses = () => {
+  const navigate = useNavigate()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
   const [routeId, setRouteId] = useState('')
@@ -56,11 +58,16 @@ const Buses = () => {
               <CFormLabel>Route</CFormLabel>
               <CFormSelect
                 value={routeId}
-                onChange={e => { setRouteId(e.target.value); setPage(1) }}
+                onChange={(e) => {
+                  setRouteId(e.target.value)
+                  setPage(1)
+                }}
               >
                 <option value="">All Routes</option>
-                {routes.map(r => (
-                  <option key={r.id} value={r.id}>{r.name}</option>
+                {routes.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
                 ))}
               </CFormSelect>
             </CCol>
@@ -75,11 +82,7 @@ const Buses = () => {
           </span>
         </CCol>
         <CCol xs="auto">
-          <CFormSelect
-            value={pageSize}
-            onChange={handlePageSizeChange}
-            style={{ width: 'auto' }}
-          >
+          <CFormSelect value={pageSize} onChange={handlePageSizeChange} style={{ width: 'auto' }}>
             <option value={25}>25 per page</option>
             <option value={50}>50 per page</option>
             <option value={100}>100 per page</option>
@@ -89,7 +92,9 @@ const Buses = () => {
 
       {error && <CAlert color="danger">{error}</CAlert>}
       {loading ? (
-        <div className="text-center my-5"><CSpinner /></div>
+        <div className="text-center my-5">
+          <CSpinner />
+        </div>
       ) : (
         <>
           <CTable striped hover responsive>
@@ -104,12 +109,18 @@ const Buses = () => {
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {items.map(b => (
-                <CTableRow key={b.id}>
+              {items.map((b) => (
+                <CTableRow
+                  key={b.id}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => navigate('/buses/' + b.id)}
+                >
                   <CTableDataCell>{b.departTime}</CTableDataCell>
                   <CTableDataCell>{b.direction}</CTableDataCell>
                   <CTableDataCell>{b.route?.name}</CTableDataCell>
-                  <CTableDataCell>{b.route?.originStopName} → {b.route?.destinationStopName}</CTableDataCell>
+                  <CTableDataCell>
+                    {b.route?.originStopName} → {b.route?.destinationStopName}
+                  </CTableDataCell>
                   <CTableDataCell>{b.subscriptionCount}</CTableDataCell>
                   <CTableDataCell>{b.incidentCount}</CTableDataCell>
                 </CTableRow>
@@ -119,15 +130,23 @@ const Buses = () => {
 
           {totalPages > 1 && (
             <CPagination className="mt-3">
-              <CPaginationItem disabled={page === 1} onClick={() => setPage(1)}>First</CPaginationItem>
-              <CPaginationItem disabled={page === 1} onClick={() => setPage(p => p - 1)}>Prev</CPaginationItem>
-              {getPaginationItems(page, totalPages).map(n => (
+              <CPaginationItem disabled={page === 1} onClick={() => setPage(1)}>
+                First
+              </CPaginationItem>
+              <CPaginationItem disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+                Prev
+              </CPaginationItem>
+              {getPaginationItems(page, totalPages).map((n) => (
                 <CPaginationItem key={n} active={n === page} onClick={() => setPage(n)}>
                   {n}
                 </CPaginationItem>
               ))}
-              <CPaginationItem disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>Next</CPaginationItem>
-              <CPaginationItem disabled={page === totalPages} onClick={() => setPage(totalPages)}>Last</CPaginationItem>
+              <CPaginationItem disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
+                Next
+              </CPaginationItem>
+              <CPaginationItem disabled={page === totalPages} onClick={() => setPage(totalPages)}>
+                Last
+              </CPaginationItem>
             </CPagination>
           )}
         </>

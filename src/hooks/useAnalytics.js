@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import apiClient from '../api/apiClient'
 
-export const useIncidentsByDay = (startDate, endDate, routeId = null) => {
+export const useIncidentsByDay = (startDate, endDate, routeId = null, busId = null) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -9,17 +9,18 @@ export const useIncidentsByDay = (startDate, endDate, routeId = null) => {
   useEffect(() => {
     const params = { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
     if (routeId) params.routeId = routeId
+    if (busId) params.busId = busId
     apiClient
       .get('/admin/analytics/incidents-by-day', { params })
       .then((res) => setData(res.data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [startDate.toISOString(), endDate.toISOString(), routeId])
+  }, [startDate.toISOString(), endDate.toISOString(), routeId, busId])
 
   return { data, loading, error }
 }
 
-export const useIncidentsByHour = (startDate, endDate, routeId = null) => {
+export const useIncidentsByHour = (startDate, endDate, routeId = null, busId = null) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -27,12 +28,13 @@ export const useIncidentsByHour = (startDate, endDate, routeId = null) => {
   useEffect(() => {
     const params = { startDate: startDate.toISOString(), endDate: endDate.toISOString() }
     if (routeId) params.routeId = routeId
+    if (busId) params.busId = busId
     apiClient
       .get('/admin/analytics/incidents-by-hour', { params })
       .then((res) => setData(res.data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [startDate.toISOString(), endDate.toISOString(), routeId])
+  }, [startDate.toISOString(), endDate.toISOString(), routeId, busId])
 
   return { data, loading, error }
 }
@@ -99,6 +101,24 @@ export const useSubscriptionGrowth = () => {
   }, [])
 
   return { data, loading, error }
+}
+
+export const useBusDetail = (busId) => {
+  const [bus, setBus] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (!busId) return
+    setLoading(true)
+    apiClient
+      .get(`/admin/buses/${busId}`)
+      .then((res) => setBus(res.data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [busId])
+
+  return { bus, loading, error }
 }
 
 export const useIncidentsByType = () => {
