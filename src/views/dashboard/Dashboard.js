@@ -18,7 +18,13 @@ import {
 } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 import useStats from '../../hooks/useStats'
-import { useIncidentsByDay, useIncidentsByHour, useTopRoutes, useSubscriptionGrowth } from '../../hooks/useAnalytics'
+import {
+  useIncidentsByDay,
+  useIncidentsByHour,
+  useTopRoutes,
+  useSubscriptionGrowth,
+  useIncidentsByType,
+} from '../../hooks/useAnalytics'
 
 const defaultEnd = new Date()
 const defaultStart = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
@@ -41,6 +47,7 @@ const Dashboard = () => {
   const { data: byHour, loading: byHourLoading } = useIncidentsByHour(startDate, endDate)
   const { data: topRoutes, loading: topRoutesLoading } = useTopRoutes(10)
   const { data: growthData, loading: growthLoading } = useSubscriptionGrowth()
+  const { data: typeData, loading: typeLoading } = useIncidentsByType()
 
   return (
     <>
@@ -204,6 +211,72 @@ const Dashboard = () => {
                     ],
                   }}
                 />
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/* Section C3 — Incidents by Type */}
+      <CRow className="mb-4">
+        <CCol md={6}>
+          <CCard>
+            <CCardHeader>Incidents by Type</CCardHeader>
+            <CCardBody>
+              {typeLoading ? (
+                <div className="text-center my-4">
+                  <CSpinner />
+                </div>
+              ) : (
+                <CChart
+                  type="pie"
+                  style={{ height: '250px' }}
+                  data={{
+                    labels: typeData.map((d) => d.reportTypeName),
+                    datasets: [
+                      {
+                        data: typeData.map((d) => d.count),
+                        backgroundColor: ['#2eb85c', '#321fdb', '#e55353', '#f9b115', '#768192'],
+                      },
+                    ],
+                  }}
+                />
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol md={6}>
+          <CCard>
+            <CCardHeader>Incident Breakdown</CCardHeader>
+            <CCardBody>
+              {typeLoading ? (
+                <div className="text-center my-4">
+                  <CSpinner />
+                </div>
+              ) : (
+                <CTable striped hover responsive>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell>Type</CTableHeaderCell>
+                      <CTableHeaderCell>Count</CTableHeaderCell>
+                      <CTableHeaderCell>% of Total</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    {(() => {
+                      const totalIncidents = typeData.reduce((sum, d) => sum + d.count, 0)
+                      return typeData.map((d) => (
+                        <CTableRow key={d.reportTypeName}>
+                          <CTableDataCell>{d.reportTypeName}</CTableDataCell>
+                          <CTableDataCell>{d.count}</CTableDataCell>
+                          <CTableDataCell>
+                            {totalIncidents > 0 ? Math.round((d.count / totalIncidents) * 100) : 0}%
+                          </CTableDataCell>
+                        </CTableRow>
+                      ))
+                    })()}
+                  </CTableBody>
+                </CTable>
               )}
             </CCardBody>
           </CCard>

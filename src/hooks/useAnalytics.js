@@ -101,6 +101,22 @@ export const useSubscriptionGrowth = () => {
   return { data, loading, error }
 }
 
+export const useIncidentsByType = () => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    apiClient
+      .get('/admin/analytics/incidents-by-type')
+      .then((res) => setData(res.data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  return { data, loading, error }
+}
+
 export const useReportTypes = () => {
   const [reportTypes, setReportTypes] = useState([])
 
