@@ -121,18 +121,21 @@ export const useBusDetail = (busId) => {
   return { bus, loading, error }
 }
 
-export const useIncidentsByType = () => {
+export const useIncidentsByType = (routeId = null, busId = null) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    const params = {}
+    if (routeId) params.routeId = routeId
+    if (busId) params.busId = busId
     apiClient
-      .get('/admin/analytics/incidents-by-type')
+      .get('/admin/analytics/incidents-by-type', { params })
       .then((res) => setData(res.data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
-  }, [])
+  }, [routeId, busId])
 
   return { data, loading, error }
 }

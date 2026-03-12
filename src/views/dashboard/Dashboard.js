@@ -47,7 +47,7 @@ const Dashboard = () => {
   const { data: byHour, loading: byHourLoading } = useIncidentsByHour(startDate, endDate)
   const { data: topRoutes, loading: topRoutesLoading } = useTopRoutes(10)
   const { data: growthData, loading: growthLoading } = useSubscriptionGrowth()
-  const { data: typeData, loading: typeLoading } = useIncidentsByType()
+  const { data: typeData, loading: typeLoading } = useIncidentsByType(null, null)
 
   return (
     <>
