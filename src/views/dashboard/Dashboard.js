@@ -25,19 +25,13 @@ import {
   useSubscriptionGrowth,
   useIncidentsByType,
 } from '../../hooks/useAnalytics'
-
-const DAY_MS = 24 * 60 * 60 * 1000
-
-// Date inputs work in local days; the API gets exact times, so the end date covers its whole day
-const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
-const endOfDay = (date) =>
-  new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)
-const fromInput = (value) => {
-  const [year, month, day] = value.split('-').map(Number)
-  return new Date(year, month - 1, day)
-}
-const toInput = (date) =>
-  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+import {
+  defaultEndDate,
+  defaultStartDate,
+  endOfDay,
+  fromInput,
+  toInput,
+} from '../../utils/dateRange'
 
 const StatCard = ({ title, value }) => (
   <CCard className="mb-4">
@@ -50,8 +44,8 @@ const StatCard = ({ title, value }) => (
 
 const Dashboard = () => {
   // worked out each time the page opens, so new incidents are never outside the range
-  const [startDate, setStartDate] = useState(() => startOfDay(new Date(Date.now() - 30 * DAY_MS)))
-  const [endDate, setEndDate] = useState(() => endOfDay(new Date()))
+  const [startDate, setStartDate] = useState(() => defaultStartDate())
+  const [endDate, setEndDate] = useState(() => defaultEndDate())
 
   const { stats, loading: statsLoading, error: statsError } = useStats()
   const { data: byDay, loading: byDayLoading } = useIncidentsByDay(startDate, endDate)
