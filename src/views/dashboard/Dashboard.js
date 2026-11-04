@@ -26,8 +26,18 @@ import {
   useIncidentsByType,
 } from '../../hooks/useAnalytics'
 
-const defaultEnd = new Date()
-const defaultStart = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+const DAY_MS = 24 * 60 * 60 * 1000
+
+// Date inputs work in local days; the API gets exact times, so the end date covers its whole day
+const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+const endOfDay = (date) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)
+const fromInput = (value) => {
+  const [year, month, day] = value.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+const toInput = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
 const StatCard = ({ title, value }) => (
   <CCard className="mb-4">
@@ -39,8 +49,9 @@ const StatCard = ({ title, value }) => (
 )
 
 const Dashboard = () => {
-  const [startDate, setStartDate] = useState(defaultStart)
-  const [endDate, setEndDate] = useState(defaultEnd)
+  // worked out each time the page opens, so new incidents are never outside the range
+  const [startDate, setStartDate] = useState(() => startOfDay(new Date(Date.now() - 30 * DAY_MS)))
+  const [endDate, setEndDate] = useState(() => endOfDay(new Date()))
 
   const { stats, loading: statsLoading, error: statsError } = useStats()
   const { data: byDay, loading: byDayLoading } = useIncidentsByDay(startDate, endDate)
@@ -60,16 +71,16 @@ const Dashboard = () => {
               <CFormLabel>Start Date</CFormLabel>
               <CFormInput
                 type="date"
-                value={startDate.toISOString().split('T')[0]}
-                onChange={(e) => setStartDate(new Date(e.target.value))}
+                value={toInput(startDate)}
+                onChange={(e) => e.target.value && setStartDate(fromInput(e.target.value))}
               />
             </CCol>
             <CCol xs={12} sm={6} md={4} lg={3}>
               <CFormLabel>End Date</CFormLabel>
               <CFormInput
                 type="date"
-                value={endDate.toISOString().split('T')[0]}
-                onChange={(e) => setEndDate(new Date(e.target.value))}
+                value={toInput(endDate)}
+                onChange={(e) => e.target.value && setEndDate(endOfDay(fromInput(e.target.value)))}
               />
             </CCol>
           </CRow>
