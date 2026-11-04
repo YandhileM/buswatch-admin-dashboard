@@ -22,9 +22,13 @@ import {
 import { CChart } from '@coreui/react-chartjs'
 import apiClient from '../../api/apiClient'
 import { useBusDetail, useIncidentsByDay, useIncidentsByHour, useIncidentsByType } from '../../hooks/useAnalytics'
-
-const defaultEnd = new Date()
-const defaultStart = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+import {
+  defaultEndDate,
+  defaultStartDate,
+  endOfDay,
+  fromInput,
+  toInput,
+} from '../../utils/dateRange'
 
 const StatCard = ({ title, value }) => (
   <CCard className="mb-4">
@@ -39,8 +43,9 @@ const BusDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const [startDate, setStartDate] = useState(defaultStart)
-  const [endDate, setEndDate] = useState(defaultEnd)
+  // worked out each time the page opens, so new incidents are never outside the range
+  const [startDate, setStartDate] = useState(() => defaultStartDate())
+  const [endDate, setEndDate] = useState(() => defaultEndDate())
 
   const [incidents, setIncidents] = useState([])
   const [incidentsLoading, setIncidentsLoading] = useState(true)
@@ -163,16 +168,16 @@ const BusDetail = () => {
               <CFormLabel>Start Date</CFormLabel>
               <CFormInput
                 type="date"
-                value={startDate.toISOString().split('T')[0]}
-                onChange={(e) => setStartDate(new Date(e.target.value))}
+                value={toInput(startDate)}
+                onChange={(e) => e.target.value && setStartDate(fromInput(e.target.value))}
               />
             </CCol>
             <CCol xs={12} sm={6} md={4} lg={3}>
               <CFormLabel>End Date</CFormLabel>
               <CFormInput
                 type="date"
-                value={endDate.toISOString().split('T')[0]}
-                onChange={(e) => setEndDate(new Date(e.target.value))}
+                value={toInput(endDate)}
+                onChange={(e) => e.target.value && setEndDate(endOfDay(fromInput(e.target.value)))}
               />
             </CCol>
           </CRow>
